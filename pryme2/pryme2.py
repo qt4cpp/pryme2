@@ -2,7 +2,8 @@ import sys
 
 from PySide2.QtWidgets import QLineEdit, QPushButton, QApplication, QWidget, QVBoxLayout, QGroupBox, QHBoxLayout
 
-from pryme2.timer import SimpleTimer
+#from timer import simple_timer
+from timer.simple_timer import SimpleTimer
 
 
 class Pryme2(QWidget):
@@ -33,6 +34,8 @@ class Pryme2(QWidget):
         self.vlayout.addWidget(self.commit_group)
         self.vlayout.addWidget(self.timer)
         self.vlayout.addWidget(self.start_btn)
+        self.vlayout.setContentsMargins(0, 0, 0, 0)
+        self.vlayout.setMargin(0)
         self.setLayout(self.vlayout)
 
     def set_connection(self):
