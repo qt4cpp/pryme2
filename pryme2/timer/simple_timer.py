@@ -1,21 +1,22 @@
 import sys
 
-from PySide2.QtCore import QTimer, QTime, Signal, Qt, SLOT
+from PySide2.QtCore import QTimer, Signal, Qt
 from PySide2.QtGui import QFont
-from PySide2.QtWidgets import QWidget, QLabel, QPushButton, QTimeEdit, QApplication, QSpinBox, QHBoxLayout, QVBoxLayout, \
+from PySide2.QtWidgets import QWidget, QLabel, QApplication, QSpinBox, QVBoxLayout, \
     QSizePolicy
 
 
 class SimpleTimer(QWidget):
 
+    timeout = Signal()
+
     def __init__(self, parent=None):
-        start = Signal()
-        finished = Signal()
 
         super().__init__(parent)
         self.timer = QTimer(self)
         self.timer.setSingleShot(True)
         self.update_timer = QTimer(self)
+        self.setting_time = 0
 
         self.remain_label = QLabel('00:00', self)
         self.remain_label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
@@ -43,14 +44,19 @@ class SimpleTimer(QWidget):
         self.update_timer.timeout.connect(self.remain_update)
 
     def start(self):
-        self.timer.start(self.timer_edit.value() * 60 * 1000)
+        self.setting_time = self.timer_edit.value()
+        self.timer.start(self.setting_time * 60 * 1000)
         self.remain_update()
         self.update_timer.start(1000)
 
     def stop(self):
         self.timer.stop()
         self.update_timer.stop()
-        self.finished.emit()
+        self.timeout.emit()
+
+    def get_notify_message(self):
+        remaining = self.timer.remainingTime() / 1000
+        return '{0} minutes have passed.'.format(self.setting_time - int(remaining/60))
 
     def remain_update(self):
         remaining = self.timer.remainingTime() / 1000

@@ -1,12 +1,16 @@
 import sys
 
-from PySide2.QtWidgets import QLineEdit, QPushButton, QApplication, QWidget, QVBoxLayout, QGroupBox, QHBoxLayout
+from PySide2.QtCore import Slot, Signal
+from PySide2.QtGui import QIcon
+from PySide2.QtWidgets import QLineEdit, QPushButton, QApplication, QWidget, QVBoxLayout, QGroupBox, QHBoxLayout, \
+    QSystemTrayIcon
 
-#from timer import simple_timer
 from timer.simple_timer import SimpleTimer
 
 
 class Pryme2(QWidget):
+
+    notify_request = Signal(str)
 
     def __init__(self, parent=None):
 
@@ -18,6 +22,10 @@ class Pryme2(QWidget):
         self.commitment_textbox.setClearButtonEnabled(True)
         self.commit_done_btn = QPushButton('&Done', self)
         self.start_btn = QPushButton('&Start', self)
+
+        self.tray = QSystemTrayIcon(self)
+        self.tray.setIcon(QIcon('pryme-logo.svg'))
+        self.tray.show()
 
         self.set_ui()
         self.set_connection()
@@ -34,12 +42,17 @@ class Pryme2(QWidget):
         self.vlayout.addWidget(self.commit_group)
         self.vlayout.addWidget(self.timer)
         self.vlayout.addWidget(self.start_btn)
-        self.vlayout.setContentsMargins(0, 0, 0, 0)
-        self.vlayout.setMargin(0)
         self.setLayout(self.vlayout)
 
     def set_connection(self):
         self.start_btn.clicked.connect(self.timer.start)
+        self.timer.timeout.connect(self.notify)
+
+    def notify(self):
+        message = self.timer.get_notify_message()
+        if not message:
+            message = 'Time up!'
+        self.tray.showMessage('Time up!', message)
 
 
 if __name__ == '__main__':
