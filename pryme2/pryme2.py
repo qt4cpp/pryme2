@@ -1,12 +1,13 @@
+import subprocess
 import sys
 
-from PySide2.QtCore import Slot, Signal
+from PySide2.QtCore import Signal
 from PySide2.QtGui import QIcon
 from PySide2.QtWidgets import QLineEdit, QPushButton, QApplication, QWidget, QVBoxLayout, QGroupBox, QHBoxLayout, \
     QSystemTrayIcon
-
 from timer.simple_timer import SimpleTimer
 
+cmd = 'afplay -v .3 ./resource/piano.mp3'
 
 class Pryme2(QWidget):
 
@@ -53,6 +54,7 @@ class Pryme2(QWidget):
         if not message:
             message = 'Time up!'
         self.tray.showMessage('Time up!', message)
+        subprocess.Popen(cmd.split())
 
 
 if __name__ == '__main__':
