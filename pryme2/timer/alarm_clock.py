@@ -55,6 +55,7 @@ class AlarmClock(QWidget):
             hour=current.hour(), min=current.minute(), sec=current.second()))
 
     def start(self):
+        self.time_edit.setEnabled(False)
         self.alarm = self.time_edit.time()
         self.timer.start(QTime.currentTime().msecsTo(self.alarm))
         self.started.emit()
@@ -69,6 +70,7 @@ class AlarmClock(QWidget):
 
     def reset(self):
         self.timer.stop()
+        self.time_edit.setEnabled(True)
 
     def get_notify_message(self):
         return ''
