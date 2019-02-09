@@ -23,6 +23,8 @@ class Pryme2(QWidget):
         self.commitment_textbox.setClearButtonEnabled(True)
         self.commit_done_btn = QPushButton('&Done', self)
         self.start_btn = QPushButton('&Start', self)
+        self.abort_btn = QPushButton('&Abort', self)
+        self.abort_btn.hide()
 
         self.tray = QSystemTrayIcon(self)
         self.tray.setIcon(QIcon('pryme-logo.svg'))
@@ -47,7 +49,11 @@ class Pryme2(QWidget):
 
     def set_connection(self):
         self.start_btn.clicked.connect(self.timer.start)
+        self.abort_btn.clicked.connect(self.timer.abort)
         self.timer.timeout.connect(self.notify)
+        self.timer.started.connect(self.toggle_start_btn)
+        self.timer.aborted.connect(self.toggle_start_btn)
+        self.timer.timeout.connect(self.toggle_start_btn)
 
     def notify(self):
         title = self.commitment_textbox.text()
@@ -59,6 +65,16 @@ class Pryme2(QWidget):
             message = 'Time up!'
         self.tray.showMessage(title, message)
         subprocess.Popen(cmd.split())
+
+    def toggle_start_btn(self):
+        if self.vlayout.indexOf(self.start_btn) >= 0:
+            self.vlayout.replaceWidget(self.start_btn, self.abort_btn)
+            self.abort_btn.show()
+            self.start_btn.hide()
+        else:
+            self.vlayout.replaceWidget(self.abort_btn, self.start_btn)
+            self.start_btn.show()
+            self.abort_btn.hide()
 
 
 if __name__ == '__main__':

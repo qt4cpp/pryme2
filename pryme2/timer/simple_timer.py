@@ -8,7 +8,9 @@ from PySide2.QtWidgets import QWidget, QLabel, QApplication, QSpinBox, QVBoxLayo
 
 class SimpleTimer(QWidget):
 
+    started = Signal()
     timeout = Signal()
+    aborted = Signal()
 
     def __init__(self, parent=None):
 
@@ -48,11 +50,21 @@ class SimpleTimer(QWidget):
         self.timer.start(self.setting_time * 60 * 1000)
         self.remain_update()
         self.update_timer.start(500)
+        self.started.emit()
 
     def stop(self):
+        self.reset()
+        self.timeout.emit()
+
+    def abort(self):
+        self.reset()
+        self.timer.stop()
+        self.aborted.emit()
+
+    def reset(self):
         self.timer.stop()
         self.update_timer.stop()
-        self.timeout.emit()
+        self.remain_label.setText('00:00')
 
     def get_notify_message(self):
         remaining = self.timer.remainingTime() / 1000
