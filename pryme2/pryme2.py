@@ -50,10 +50,14 @@ class Pryme2(QWidget):
         self.timer.timeout.connect(self.notify)
 
     def notify(self):
+        title = self.commitment_textbox.text()
+        if not title:
+            title = 'Time up!'
         message = self.timer.get_notify_message()
         if not message:
+            print(message)
             message = 'Time up!'
-        self.tray.showMessage('Time up!', message)
+        self.tray.showMessage(title, message)
         subprocess.Popen(cmd.split())
 
 

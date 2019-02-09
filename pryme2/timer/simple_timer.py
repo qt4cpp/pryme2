@@ -47,7 +47,7 @@ class SimpleTimer(QWidget):
         self.setting_time = self.timer_edit.value()
         self.timer.start(self.setting_time * 60 * 1000)
         self.remain_update()
-        self.update_timer.start(1000)
+        self.update_timer.start(500)
 
     def stop(self):
         self.timer.stop()
