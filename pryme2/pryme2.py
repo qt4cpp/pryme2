@@ -5,7 +5,9 @@ from PySide2.QtCore import Signal
 from PySide2.QtGui import QIcon
 from PySide2.QtWidgets import QLineEdit, QPushButton, QApplication, QWidget, QVBoxLayout, QGroupBox, QHBoxLayout, \
     QSystemTrayIcon
+
 from timer.simple_timer import SimpleTimer
+from timer.alarm_clock import AlarmClock
 
 cmd = 'afplay -v .3 ./resource/piano.mp3'
 
@@ -17,7 +19,8 @@ class Pryme2(QWidget):
 
         super(Pryme2, self).__init__(parent)
 
-        self.timer = SimpleTimer(self)
+        # self.timer = SimpleTimer(self)
+        self.timer = AlarmClock(self)
         self.commitment_textbox = QLineEdit(self)
         self.commitment_textbox.setPlaceholderText('What do you want to commit?')
         self.commitment_textbox.setClearButtonEnabled(True)

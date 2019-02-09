@@ -75,6 +75,10 @@ class SimpleTimer(QWidget):
         self.remain_label.setText('{min:02}:{sec:02}'.format(
             min=int(remaining / 60), sec=int(remaining % 60)))
 
+    @property
+    def name(self):
+        return 'Simple Timer'
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
