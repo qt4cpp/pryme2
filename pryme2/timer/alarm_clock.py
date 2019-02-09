@@ -1,6 +1,7 @@
 import sys
 
 from PySide2.QtCore import QTime, Signal, QTimer
+from PySide2.QtGui import QFont
 from PySide2.QtWidgets import QWidget, QTimeEdit, QPushButton, QLabel, QVBoxLayout, QApplication
 
 
@@ -19,7 +20,10 @@ class AlarmClock(QWidget):
         self.update_timer = QTimer(self)
         self.update_timer.setInterval(1000)
 
-        self.current_label = QLabel('')
+        self.current_label = QLabel('00:00:00')
+        font = QFont()
+        font.setPointSize(50)
+        self.current_label.setFont(font)
         self.time_edit = QTimeEdit(self)
         self.time_edit.setDisplayFormat('H:mm')
         self.set_around_btn = QPushButton('Set around time', self)
@@ -29,6 +33,7 @@ class AlarmClock(QWidget):
         self.reset()
 
         self.update_timer.start()
+        self.update_label()
         self.set_around_time()
 
     def set_ui(self):
