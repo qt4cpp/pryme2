@@ -82,17 +82,23 @@ class Pryme2(QWidget):
         self.tray.showMessage(title, message)
         subprocess.Popen(cmd.split())
 
+    def disable_ui(self):
+        self.abort_btn.show()
+        self.start_btn.hide()
+        self.timer_selection.setEnabled(False)
+
+    def enable_ui(self):
+        self.start_btn.show()
+        self.abort_btn.hide()
+        self.timer_selection.setEnabled(True)
+
     def toggle_start_btn(self):
         if self.vlayout.indexOf(self.start_btn) >= 0:
             self.vlayout.replaceWidget(self.start_btn, self.abort_btn)
-            self.abort_btn.show()
-            self.start_btn.hide()
-            self.timer_selection.setEnabled(False)
+            self.disable_ui()
         else:
             self.vlayout.replaceWidget(self.abort_btn, self.start_btn)
-            self.start_btn.show()
-            self.abort_btn.hide()
-            self.timer_selection.setEnabled(True)
+            self.enable_ui()
 
     @Slot(int)
     def change_timer(self, index):
