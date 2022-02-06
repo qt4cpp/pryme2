@@ -11,6 +11,7 @@ class SimpleTimer(QWidget):
     started = Signal()
     timeout = Signal()
     aborted = Signal()
+    paused = Signal()
 
     def __init__(self, parent=None):
 
@@ -60,6 +61,13 @@ class SimpleTimer(QWidget):
         self.reset()
         self.timer.stop()
         self.aborted.emit()
+
+    def pause(self):
+        self.paused.emit()
+        # Timer の残り時間を記録
+        # 残り時間をTimer にセットする。
+        # pause Signal を emit
+        # UI を pause から startにする
 
     def reset(self):
         self.timer.stop()
