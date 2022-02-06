@@ -1,6 +1,7 @@
 import sys
 
-from PySide2.QtWidgets import QMainWindow, QApplication
+from PySide6.QtWidgets import QMainWindow, QApplication
+
 
 from pryme2 import Pryme2
 

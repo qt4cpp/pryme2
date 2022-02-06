@@ -1,8 +1,8 @@
 import sys
 
-from PySide2.QtCore import QTime, Signal, QTimer
-from PySide2.QtGui import QFont
-from PySide2.QtWidgets import QWidget, QTimeEdit, QPushButton, QLabel, QVBoxLayout, QApplication
+from PySide6.QtCore import QTime, Signal, QTimer
+from PySide6.QtGui import QFont
+from PySide6.QtWidgets import QWidget, QTimeEdit, QPushButton, QLabel, QVBoxLayout, QApplication
 
 
 class AlarmClock(QWidget):
@@ -90,4 +90,4 @@ if __name__ == '__main__':
 
     AlarmClock = AlarmClock()
     AlarmClock.show()
-    sys.exit(app.exec_())
+    sys.exit(app.exec())

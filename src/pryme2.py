@@ -1,9 +1,9 @@
 import subprocess
 import sys
 
-from PySide2.QtCore import Signal
-from PySide2.QtGui import QIcon
-from PySide2.QtWidgets import QLineEdit, QPushButton, QApplication, QWidget, QVBoxLayout, QGroupBox, QHBoxLayout, \
+from PySide6.QtCore import Signal
+from PySide6.QtGui import QIcon
+from PySide6.QtWidgets import QLineEdit, QPushButton, QApplication, QWidget, QVBoxLayout, QGroupBox, QHBoxLayout, \
     QSystemTrayIcon
 
 from timer.simple_timer import SimpleTimer

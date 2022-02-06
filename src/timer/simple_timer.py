@@ -1,8 +1,8 @@
 import sys
 
-from PySide2.QtCore import QTimer, Signal, Qt
-from PySide2.QtGui import QFont
-from PySide2.QtWidgets import QWidget, QLabel, QApplication, QSpinBox, QVBoxLayout, \
+from PySide6.QtCore import QTimer, Signal, Qt
+from PySide6.QtGui import QFont
+from PySide6.QtWidgets import QWidget, QLabel, QApplication, QSpinBox, QVBoxLayout, \
     QSizePolicy
 
 
