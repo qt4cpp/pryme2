@@ -31,6 +31,8 @@ class Pryme2(QWidget):
         self.start_btn = QPushButton('&Start', self)
         self.abort_btn = QPushButton('&Abort', self)
         self.abort_btn.hide()
+        self.pause_btn = QPushButton('&Pause', self)
+        self.pause_btn.hide()
 
         self.tray = QSystemTrayIcon(self)
         self.tray.setIcon(QIcon('pryme-logo.svg'))
@@ -51,7 +53,13 @@ class Pryme2(QWidget):
         self.vlayout.addWidget(self.commit_group)
         self.vlayout.addWidget(self.timer_selection)
         self.vlayout.addWidget(self.timer)
-        self.vlayout.addWidget(self.start_btn)
+
+        self.bottom_hlayout = QHBoxLayout()
+        self.bottom_hlayout.addWidget(self.start_btn)
+        self.bottom_hlayout.addWidget(self.abort_btn)
+        self.bottom_hlayout.addWidget(self.pause_btn)
+
+        self.vlayout.addLayout(self.bottom_hlayout)
         self.setLayout(self.vlayout)
 
     def set_connection(self):
@@ -97,12 +105,12 @@ class Pryme2(QWidget):
     def activate_start_button(self, activate: bool):
         if activate:
             # active start button
-            self.vlayout.replaceWidget(self.abort_btn, self.start_btn)
             self.start_btn.show()
             self.abort_btn.hide()
+            self.pause_btn.hide()
         else:
-            self.vlayout.replaceWidget(self.start_btn, self.abort_btn)
             self.abort_btn.show()
+            self.pause_btn.show()
             self.start_btn.hide()
 
     @Slot(int)
