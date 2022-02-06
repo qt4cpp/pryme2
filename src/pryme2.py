@@ -84,6 +84,7 @@ class Pryme2(QWidget):
 
     def set_ui_enabled(self, enable: bool):
         self.timer_selection.setEnabled(enable)
+        self.commitment_textbox.setEnabled(enable)
 
     def set_timer_active_ui(self):
         self.activate_start_button(False)
