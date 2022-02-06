@@ -19,7 +19,7 @@ class Pryme2(QWidget):
 
         super(Pryme2, self).__init__(parent)
 
-        self.timer_instances = (SimpleTimer(self), AlarmClock(self))
+        self.timer_instances = (SimpleTimer(), AlarmClock())
         self.timer_selection = QComboBox(self)
         for t in self.timer_instances:
             self.timer_selection.addItem(t.name)
@@ -62,9 +62,9 @@ class Pryme2(QWidget):
         self.start_btn.clicked.connect(self.timer.start)
         self.abort_btn.clicked.connect(self.timer.abort)
         self.timer.timeout.connect(self.notify)
-        self.timer.started.connect(self.toggle_start_btn)
-        self.timer.aborted.connect(self.toggle_start_btn)
-        self.timer.timeout.connect(self.toggle_start_btn)
+        self.timer.started.connect(self.set_timer_active_ui)
+        self.timer.aborted.connect(self.set_timer_deactive_ui)
+        self.timer.timeout.connect(self.set_timer_deactive_ui)
 
     def disconnect_timer(self):
         self.timer.disconnect(self)
@@ -82,23 +82,27 @@ class Pryme2(QWidget):
         self.tray.showMessage(title, message)
         subprocess.Popen(cmd.split())
 
-    def disable_ui(self):
-        self.abort_btn.show()
-        self.start_btn.hide()
-        self.timer_selection.setEnabled(False)
+    def set_ui_enabled(self, enable: bool):
+        self.timer_selection.setEnabled(enable)
 
-    def enable_ui(self):
-        self.start_btn.show()
-        self.abort_btn.hide()
-        self.timer_selection.setEnabled(True)
+    def set_timer_active_ui(self):
+        self.activate_start_button(False)
+        self.set_ui_enabled(False)
 
-    def toggle_start_btn(self):
-        if self.vlayout.indexOf(self.start_btn) >= 0:
-            self.vlayout.replaceWidget(self.start_btn, self.abort_btn)
-            self.disable_ui()
-        else:
+    def set_timer_deactive_ui(self):
+        self.activate_start_button(True)
+        self.set_ui_enabled(True)
+
+    def activate_start_button(self, activate: bool):
+        if activate:
+            # active start button
             self.vlayout.replaceWidget(self.abort_btn, self.start_btn)
-            self.enable_ui()
+            self.start_btn.show()
+            self.abort_btn.hide()
+        else:
+            self.vlayout.replaceWidget(self.start_btn, self.abort_btn)
+            self.abort_btn.show()
+            self.start_btn.hide()
 
     @Slot(int)
     def change_timer(self, index):
