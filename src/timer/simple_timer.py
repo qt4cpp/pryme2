@@ -20,6 +20,7 @@ class SimpleTimer(QWidget):
         self.timer.setSingleShot(True)
         self.update_timer = QTimer(self)
         self.setting_time = 0
+        self.remaining = 0
 
         self.remain_label = QLabel('00:00', self)
         self.remain_label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
@@ -63,16 +64,19 @@ class SimpleTimer(QWidget):
         self.aborted.emit()
 
     def pause(self):
+        self.remaining = self.timer.remainingTime()
+        self.timer.stop()
         self.paused.emit()
-        # Timer の残り時間を記録
-        # 残り時間をTimer にセットする。
-        # pause Signal を emit
-        # UI を pause から startにする
+
+    def resume(self):
+        self.timer.start(self.remaining)
+        self.started.emit()
 
     def reset(self):
         self.timer.stop()
         self.update_timer.stop()
         self.remain_label.setText('00:00')
+        self.remaining = 0
 
     def get_notify_message(self):
         remaining = self.timer.remainingTime() / 1000
