@@ -33,6 +33,8 @@ class Pryme2(QWidget):
         self.abort_btn.hide()
         self.pause_btn = QPushButton('&Pause', self)
         self.pause_btn.hide()
+        self.resume_btn = QPushButton('&Resume', self)
+        self.resume_btn.hide()
 
         self.tray = QSystemTrayIcon(self)
         self.tray.setIcon(QIcon('pryme-logo.svg'))
@@ -58,6 +60,7 @@ class Pryme2(QWidget):
         self.bottom_hlayout.addWidget(self.start_btn)
         self.bottom_hlayout.addWidget(self.abort_btn)
         self.bottom_hlayout.addWidget(self.pause_btn)
+        self.bottom_hlayout.addWidget(self.resume_btn)
 
         self.vlayout.addLayout(self.bottom_hlayout)
         self.setLayout(self.vlayout)
@@ -70,8 +73,10 @@ class Pryme2(QWidget):
         self.start_btn.clicked.connect(self.timer.start)
         self.abort_btn.clicked.connect(self.timer.abort)
         self.pause_btn.clicked.connect(self.timer.pause)
+        self.resume_btn.clicked.connect(self.timer.resume)
         self.timer.timeout.connect(self.notify)
         self.timer.started.connect(self.set_timer_active_ui)
+        self.timer.paused.connect(self.activate_resume_button)
         self.timer.aborted.connect(self.set_timer_deactive_ui)
         self.timer.timeout.connect(self.set_timer_deactive_ui)
 
@@ -79,6 +84,7 @@ class Pryme2(QWidget):
         self.timer.disconnect(self)
         self.start_btn.disconnect(self.timer)
         self.abort_btn.disconnect(self.timer)
+        self.resume_btn.disconnect(self.timer)
 
     def notify(self):
         title = self.commitment_textbox.text()
@@ -109,10 +115,16 @@ class Pryme2(QWidget):
             self.start_btn.show()
             self.abort_btn.hide()
             self.pause_btn.hide()
+            self.resume_btn.hide()
         else:
             self.abort_btn.show()
             self.pause_btn.show()
+            self.resume_btn.hide()
             self.start_btn.hide()
+
+    def activate_resume_button(self):
+        self.pause_btn.hide()
+        self.resume_btn.show()
 
     @Slot(int)
     def change_timer(self, index):

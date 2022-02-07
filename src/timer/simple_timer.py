@@ -50,9 +50,12 @@ class SimpleTimer(QWidget):
     def start(self):
         self.setting_time = self.timer_edit.value()
         self.timer.start(self.setting_time * 60 * 1000)
-        self.remain_update()
-        self.update_timer.start(500)
+        self.set_remain_update()
         self.started.emit()
+
+    def set_remain_update(self):
+        self.remain_update()
+        self.update_timer.start(250)
 
     def stop(self):
         self.reset()
@@ -64,12 +67,14 @@ class SimpleTimer(QWidget):
         self.aborted.emit()
 
     def pause(self):
+        self.update_timer.stop()
         self.remaining = self.timer.remainingTime()
         self.timer.stop()
         self.paused.emit()
 
     def resume(self):
         self.timer.start(self.remaining)
+        self.set_remain_update()
         self.started.emit()
 
     def reset(self):
