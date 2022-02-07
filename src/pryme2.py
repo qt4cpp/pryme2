@@ -72,13 +72,14 @@ class Pryme2(QWidget):
     def connect_timer(self):
         self.start_btn.clicked.connect(self.timer.start)
         self.abort_btn.clicked.connect(self.timer.abort)
-        self.pause_btn.clicked.connect(self.timer.pause)
-        self.resume_btn.clicked.connect(self.timer.resume)
         self.timer.timeout.connect(self.notify)
         self.timer.started.connect(self.set_timer_active_ui)
-        self.timer.paused.connect(self.activate_resume_button)
         self.timer.aborted.connect(self.set_timer_deactive_ui)
         self.timer.timeout.connect(self.set_timer_deactive_ui)
+        if hasattr(self.timer, 'pause'):
+            self.pause_btn.clicked.connect(self.timer.pause)
+            self.resume_btn.clicked.connect(self.timer.resume)
+            self.timer.paused.connect(self.activate_resume_button)
 
     def disconnect_timer(self):
         self.timer.disconnect(self)
@@ -118,9 +119,10 @@ class Pryme2(QWidget):
             self.resume_btn.hide()
         else:
             self.abort_btn.show()
-            self.pause_btn.show()
-            self.resume_btn.hide()
             self.start_btn.hide()
+            if hasattr(self.timer, 'pause'):
+                self.pause_btn.show()
+                self.resume_btn.hide()
 
     def activate_resume_button(self):
         self.pause_btn.hide()
