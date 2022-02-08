@@ -5,12 +5,11 @@ from PySide6.QtGui import QFont
 from PySide6.QtWidgets import QWidget, QLabel, QApplication, QSpinBox, QVBoxLayout, \
     QSizePolicy
 
+from src.timer.base_timer import BaseTimer
 
-class SimpleTimer(QWidget):
 
-    started = Signal()
-    timeout = Signal()
-    aborted = Signal()
+class SimpleTimer(QWidget, BaseTimer):
+
     paused = Signal()
 
     def __init__(self, parent=None):

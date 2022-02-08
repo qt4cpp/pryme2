@@ -9,34 +9,28 @@ Methods: start, abort, stop, get_notify_message, name
 
 If you need pause function, you should implement pause() in your inherit class.
 """
-from abc import ABCMeta, abstractmethod
 
 from PySide6.QtCore import Signal
 
 
-class BaseTimer(metaclass=ABCMeta):
+class BaseTimer():
 
     started = Signal()
     timeout = Signal()
     aborted = Signal()
 
-    @abstractmethod
     def start(self):
-        self.started.emit()
+        raise NotImplemented
 
-    @abstractmethod
     def stop(self):
-        self.timeout.emit()
+        raise NotImplemented
 
-    @abstractmethod
     def abort(self):
-        self.aborted.emit()
+        raise NotImplemented
 
-    @abstractmethod
     def get_notify_message(self):
-        return 'Invalid message.'
+        raise NotImplemented
 
     @property
-    @abstractmethod
     def name(self):
-        return 'Base Timer'
+        raise NotImplemented
