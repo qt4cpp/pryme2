@@ -33,6 +33,14 @@ class PomoTimer(QWidget, BaseTimer):
         self.settings = {'1pomo': 25, 'short_break': 5, 'long_break': 15, 'long_break_after': 4}
         self.pomo_count = 0
 
+        self.set_ui()
+
+    def set_ui(self):
+        layout = self.simple_timer.layout()
+        i = layout.indexOf(self.simple_timer.timer_edit)
+        layout.takeAt(i)
+        self.setLayout(layout)
+
     def set_connection(self):
         pass
         # simple_timer と break を処理する。
