@@ -8,6 +8,7 @@ from PySide6.QtWidgets import QLineEdit, QPushButton, QApplication, QWidget, QVB
 
 from timer.simple_timer import SimpleTimer
 from timer.alarm_clock import AlarmClock
+from timer.pomo_timer import PomoTimer
 
 cmd = 'afplay -v .3 ./resource/piano.mp3'
 
@@ -19,7 +20,7 @@ class Pryme2(QWidget):
 
         super(Pryme2, self).__init__(parent)
 
-        self.timer_instances = (SimpleTimer(), AlarmClock())
+        self.timer_instances = (SimpleTimer(), AlarmClock(), PomoTimer())
         self.timer_selection = QComboBox(self)
         for t in self.timer_instances:
             self.timer_selection.addItem(t.name)
