@@ -30,10 +30,11 @@ class PomoTimer(QWidget, BaseTimer):
         super().__init__()
         self.simple_timer = SimpleTimer(self)
 
-        self.settings = {'1pomo': 25, 'short_break': 5, 'long_break': 15, 'long_break_after': 4}
+        self.settings = {'pomo': 25, 'short_break': 5, 'long_break': 15, 'long_break_after': 4}
         self.pomo_count = 0
 
         self.set_ui()
+        self.set_connection()
 
     def set_ui(self):
         layout = self.simple_timer.layout()
@@ -42,13 +43,24 @@ class PomoTimer(QWidget, BaseTimer):
         self.setLayout(layout)
 
     def set_connection(self):
-        pass
+        self.simple_timer.timeout.connect(self.timeout)
         # simple_timer と break を処理する。
 
     def start(self):
-        self.pomo_count += 1
+        self.set_pomo()
         self.simple_timer.start()
         self.started.emit()
+
+    def set_pomo(self):
+        self.pomo_count += 1
+        # self.simple_timer.timer_edit.setValue(self.settings['pomo'])
+        self.simple_timer.timer_edit.setValue(1)
+
+    def set_break(self):
+        if self.pomo_count % self.settings['long_break_after']:
+            self.simple_timer.timer_edit.setValue(self.settings['short_break'])
+        else:
+            self.simple_timer.timer_edit.setValue(self.settings['long_break'])
 
     def abort(self):
         self.simple_timer.abort()
@@ -61,6 +73,12 @@ class PomoTimer(QWidget, BaseTimer):
     def resume(self):
         self.simple_timer.resume()
         self.started.emit()
+
+    def timeout(self):
+        self.timeout.emit()
+
+    def get_notify_message(self):
+        return ''
 
     @property
     def name(self):
