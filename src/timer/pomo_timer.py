@@ -31,12 +31,17 @@ class PomoTimer(QWidget, BaseTimer):
         self.simple_timer = SimpleTimer(self)
 
         self.settings = {'pomo': 25, 'short_break': 5, 'long_break': 15, 'long_break_after': 4}
+        self.state_dict = {'work': 'Work!', 'break': 'Break.', 'pause': 'Pause', 'wait': "Let's start."}
         self.work_timer = QTimer(self)
         self.work_timer.setSingleShot(True)
         self.break_timer = QTimer(self)
         self.break_timer.setSingleShot(True)
 
         self.pomo_count = 0
+        self.pomo_count_lbl = QLabel(self)
+        self.pomo_count_lbl.setText(f'{self.pomo_count} pomodoro finished.')
+        self.state_lbl = QLabel(self)
+        self.state_lbl.setText(self.state_dict['wait'])
         self.estimate_pomo = 0
         self.estimate_label = QLabel(self)
         self.estimate_label.setText('Estimate: ')
@@ -58,11 +63,12 @@ class PomoTimer(QWidget, BaseTimer):
 
         vlayout = QVBoxLayout()
         vlayout.addLayout(hlayout)
+        vlayout.addWidget(self.pomo_count_lbl)
+        vlayout.addWidget(self.state_lbl)
         vlayout.addWidget(self.simple_timer)
         self.setLayout(vlayout)
 
     def set_connection(self):
-        # self.simple_timer.timeout.connect(self.timeout)
         self.work_timer.timeout.connect(self.timeout)
         self.break_timer.timeout.connect(self.start_work)
 
@@ -75,6 +81,7 @@ class PomoTimer(QWidget, BaseTimer):
         Start timer for working on the task.
         :return:
         """
+        self.state_lbl.setText(self.state_dict['work'])
         self.simple_timer.timer = self.work_timer
         self.simple_timer.timer_edit.setValue(self.settings['pomo'])
         self.simple_timer.start()
@@ -86,6 +93,7 @@ class PomoTimer(QWidget, BaseTimer):
         Short break is normal break, long break comes every some tasks(default 4).
         :return:
         """
+        self.state_lbl.setText(self.state_dict['break'])
         self.simple_timer.timer = self.break_timer
         if self.pomo_count % self.settings['long_break_after']:
             self.simple_timer.timer_edit.setValue(self.settings['short_break'])
@@ -95,14 +103,16 @@ class PomoTimer(QWidget, BaseTimer):
         self.started.emit()
 
     def abort(self):
-        self.simple_timer.abort()
+        self.reset()
         self.aborted.emit()
 
     def pause(self):
+        self.state_lbl.setText(self.state_dict['pause'])
         self.simple_timer.pause()
         self.paused.emit()
 
     def resume(self):
+        self.state_lbl.setText(self.state_dict['work'])
         self.simple_timer.resume()
         self.started.emit()
 
@@ -119,6 +129,7 @@ class PomoTimer(QWidget, BaseTimer):
         self.simple_timer.reset()
         self.work_timer.stop()
         self.break_timer.stop()
+        self.state_lbl.setText(self.state_dict['wait'])
 
     def get_notify_message(self):
         return ''
