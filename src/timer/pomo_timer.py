@@ -8,7 +8,7 @@ pomodoro timer の機能を提供する。
 """
 from PySide6.QtCore import QTimer, Signal, Slot
 from PySide6.QtGui import QFont
-from PySide6.QtWidgets import QWidget, QLabel, QLayout, QSizePolicy
+from PySide6.QtWidgets import QWidget, QLabel, QLayout, QSizePolicy, QSpinBox, QHBoxLayout, QVBoxLayout
 
 from src.timer import SimpleTimer
 from src.timer.base_timer import BaseTimer
@@ -31,7 +31,19 @@ class PomoTimer(QWidget, BaseTimer):
         self.simple_timer = SimpleTimer(self)
 
         self.settings = {'pomo': 25, 'short_break': 5, 'long_break': 15, 'long_break_after': 4}
+        self.work_timer = QTimer(self)
+        self.work_timer.setSingleShot(True)
+        self.break_timer = QTimer(self)
+        self.break_timer.setSingleShot(True)
+
         self.pomo_count = 0
+        self.estimate_pomo = 0
+        self.estimate_label = QLabel(self)
+        self.estimate_label.setText('Estimate: ')
+        self.estimate_pomo_widget = QSpinBox(self)
+        self.estimate_pomo_widget.setValue(4)
+        self.estimate_pomo_widget.setSuffix('  pomo')
+        self.estimate_pomo_widget.setRange(1, 20)
 
         self.set_ui()
         self.set_connection()
@@ -40,27 +52,48 @@ class PomoTimer(QWidget, BaseTimer):
         layout = self.simple_timer.layout()
         i = layout.indexOf(self.simple_timer.timer_edit)
         layout.takeAt(i)
-        self.setLayout(layout)
+        hlayout = QHBoxLayout()
+        hlayout.addWidget(self.estimate_label)
+        hlayout.addWidget(self.estimate_pomo_widget)
+
+        vlayout = QVBoxLayout()
+        vlayout.addLayout(hlayout)
+        vlayout.addWidget(self.simple_timer)
+        self.setLayout(vlayout)
 
     def set_connection(self):
-        self.simple_timer.timeout.connect(self.timeout)
-        # simple_timer と break を処理する。
+        # self.simple_timer.timeout.connect(self.timeout)
+        self.work_timer.timeout.connect(self.timeout)
+        self.break_timer.timeout.connect(self.start_work)
 
     def start(self):
-        self.set_pomo()
+        self.start_work()
+
+    def start_work(self):
+        """
+        Start timer for working on the task.
+        :return:
+        """
+        self.simple_timer.timer = self.work_timer
+        # self.simple_timer.timer_edit.setValue(self.settings['pomo'])
+        self.simple_timer.timer_edit.setValue(1)
         self.simple_timer.start()
         self.started.emit()
 
-    def set_pomo(self):
-        self.pomo_count += 1
-        # self.simple_timer.timer_edit.setValue(self.settings['pomo'])
-        self.simple_timer.timer_edit.setValue(1)
-
-    def set_break(self):
+    def start_break(self):
+        """
+        Start timer for working on the rest.
+        Short break is normal break, long break comes every some tasks(default 4).
+        :return:
+        """
+        self.pomo_count += 1  # finished
+        self.simple_timer.timer = self.break_timer
         if self.pomo_count % self.settings['long_break_after']:
             self.simple_timer.timer_edit.setValue(self.settings['short_break'])
         else:
             self.simple_timer.timer_edit.setValue(self.settings['long_break'])
+        self.simple_timer.start()
+        self.started.emit()
 
     def abort(self):
         self.simple_timer.abort()
@@ -75,7 +108,10 @@ class PomoTimer(QWidget, BaseTimer):
         self.started.emit()
 
     def timeout(self):
-        self.timeout.emit()
+        self.pomo_count += 1
+        if self.pomo_count >= self.estimate_pomo:
+            self.timeout.emit()
+        self.start_break()
 
     def get_notify_message(self):
         return ''
