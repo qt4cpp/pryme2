@@ -9,7 +9,7 @@ class AlarmClock(QWidget):
 
     started = Signal()
     aborted = Signal()
-    timeout = Signal()
+    finished = Signal()
 
     def __init__(self, parent=None):
 
@@ -71,7 +71,7 @@ class AlarmClock(QWidget):
 
     def stop(self):
         self.reset()
-        self.timeout.emit()
+        self.finished.emit()
 
     def reset(self):
         self.timer.stop()

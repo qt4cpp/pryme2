@@ -58,7 +58,7 @@ class SimpleTimer(QWidget, BaseTimer):
 
     def stop(self):
         self.reset()
-        self.timeout.emit()
+        self.finished.emit()
 
     def abort(self):
         self.reset()
