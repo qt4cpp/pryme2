@@ -45,8 +45,6 @@ class PomoTimer(QWidget, BaseTimer):
         self.estimate_pomo_widget.setSuffix('  pomo')
         self.estimate_pomo_widget.setRange(1, 20)
 
-        self.simple_timer.start = self.fake_start
-
         self.set_ui()
         self.set_connection()
 
@@ -65,10 +63,11 @@ class PomoTimer(QWidget, BaseTimer):
 
     def set_connection(self):
         # self.simple_timer.timeout.connect(self.timeout)
-        self.work_timer.timeout.connect(self.timeout__)
+        self.work_timer.timeout.connect(self.timeout)
         self.break_timer.timeout.connect(self.start_work)
 
     def start(self):
+        self.estimate_pomo = self.estimate_pomo_widget.value()
         self.start_work()
 
     def start_work(self):
@@ -77,8 +76,7 @@ class PomoTimer(QWidget, BaseTimer):
         :return:
         """
         self.simple_timer.timer = self.work_timer
-        # self.simple_timer.timer_edit.setValue(self.settings['pomo'])
-        self.simple_timer.timer_edit.setValue(10)
+        self.simple_timer.timer_edit.setValue(self.settings['pomo'])
         self.simple_timer.start()
         self.started.emit()
 
@@ -110,10 +108,17 @@ class PomoTimer(QWidget, BaseTimer):
 
     def timeout(self):
         self.pomo_count += 1
-        print(self.pomo_count)
         if self.pomo_count >= self.estimate_pomo:
-            self.timeout.emit()
-        self.start_break()
+            self.reset()
+            self.finished.emit()
+        else:
+            self.start_break()
+
+    def reset(self):
+        self.pomo_count = 0
+        self.simple_timer.reset()
+        self.work_timer.stop()
+        self.break_timer.stop()
 
     def get_notify_message(self):
         return ''
@@ -124,6 +129,6 @@ class PomoTimer(QWidget, BaseTimer):
 
     def fake_start(self):
         self.simple_timer.setting_time = self.simple_timer.timer_edit.value()
-        self.simple_timer.timer.start(self.simple_timer.setting_time * 1100)
+        self.simple_timer.timer.start(self.simple_timer.setting_time * 1000)
         self.simple_timer.set_remain_update()
         self.simple_timer.started.emit()
